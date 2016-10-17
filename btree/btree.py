@@ -1,3 +1,5 @@
+from bnode import Node
+
 class BTree(object):
     def __init__(self, order):
         self.order = order
