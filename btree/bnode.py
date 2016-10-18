@@ -55,6 +55,24 @@ class Node(object):
                 arr[i] = new_k
                 break
         return arr
+    def _insert(self, key):
+        if self._is_full():
+            root = self
+            newNode = Node(self.order, parent=None, isRoot=True)
+            newNode.isLeaf = False
+            newNode.count = 0
+            newNode.pointers.append(root)
+
+            self = newNode
+            root.parent = self
+            root.isRoot = False
+            self._split_child(root)
+            self._insert_nonfull(key)
+            return self
+        else:
+            self._insert_nonfull(key)
+            return self
+
     def _search(self, key):
         if key in self.keys:
             return True
