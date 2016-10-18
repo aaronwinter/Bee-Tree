@@ -8,3 +8,12 @@ class Node(object):
         self.count = 0
         self.isLeaf = True
 
+    def _search(self, key):
+        if key in self.keys:
+            return True
+        elif self.isLeaf:
+            return False
+        else:
+            index = self._get_index(key)
+            return self.pointers[index]._search(key)
+
