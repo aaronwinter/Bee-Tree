@@ -122,3 +122,17 @@ class Node(object):
             index = self._get_index(key)
             return self.pointers[index]._search(key)
 
+           
+    def _delete(self, key):
+        if key in self.keys and self.isLeaf is True:
+            self.keys.remove(key)
+            self._adjust()
+        elif key in self.keys and self.isLeaf is False:
+            index = self._get_index(key)
+            smallestNode = self.pointers[index+1]._get_leftmost_leaf()
+            smallestKey = smallestNode.keys[0]
+            self._replace_key(key, smallestKey)
+            self.pointers[index+1]._get_leftmost_leaf()._adjust()
+        else:
+            index = self._get_index(key)
+            return self.pointers[index]._delete(key)
