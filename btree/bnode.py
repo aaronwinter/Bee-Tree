@@ -55,6 +55,20 @@ class Node(object):
                 arr[i] = new_k
                 break
         return arr
+    def _insert_nonfull(self, key):
+        index = self._get_index(key)
+
+        if self.isLeaf is True:
+            self.keys.insert(index, key)
+            self.count += 1
+        else:
+            nextNode = self.pointers[index]
+            if nextNode._is_full():
+                self._split_child(self.pointers[index])
+                self.isLeaf = False
+                if key > self.keys[index]: index += 1
+            self.pointers[index]._insert_nonfull(key)
+
     def _insert(self, key):
         if self._is_full():
             root = self
