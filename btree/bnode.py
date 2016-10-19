@@ -122,6 +122,36 @@ class Node(object):
             index = self._get_index(key)
             return self.pointers[index]._search(key)
 
+    def _adjust_overflowing(self, leftN=None, rightN=None, index_ptr=0):
+        if leftN is not None and leftN._is_full():
+            self._get_left_sib(index_ptr)._redistribute('->')
+        elif rightN is not None and rightN._is_full():
+            self._get_right_sib(index_ptr)._redistribute('<-')
+        else:
+            self.parent._split_child(self)
+            self.parent._adjust()
+    
+    def _adjust_underflowing(self, leftN=None, rightN=None, index_ptr=0):
+        if leftN is not None and len(leftN.keys) > (self.order - 1):
+            self._get_left_sib(index_ptr)._redistribute('->')
+            return
+        elif rightN is not None and len(rightN.keys) > (self.order - 1):
+            self._get_right_sib(index_ptr)._redistribute('<-')
+            return
+        elif self.isRoot is True:
+            if len(self.pointers) == 1:
+                self.keys = self.pointers[0].keys
+                self.pointers = self.pointers[0].pointers
+                return
+        else:
+            if rightN is not None:
+                self._merge(self._get_right_sib(index_ptr))
+                return
+            else:
+                self._merge(self._get_left_sib(index_ptr))
+                return
+        return
+
                 
     def _adjust(self):
         overflowing = self._is_overflowing()
