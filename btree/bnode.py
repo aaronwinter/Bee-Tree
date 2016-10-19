@@ -122,6 +122,22 @@ class Node(object):
             index = self._get_index(key)
             return self.pointers[index]._search(key)
 
+                
+    def _adjust(self):
+        overflowing = self._is_overflowing()
+        underflowing = self._is_underflowing()
+        index_ptr = self.parent._get_index_pointer(self)
+        left_sib_exist = self._has_left_sib(index_ptr)
+        right_sib_exist = self._has_right_sib(index_ptr)
+        leftN = self._get_left_sib(index_ptr) if left_sib_exist else None
+        rightN = self._get_right_sib(index_ptr) if right_sib_exist else None
+
+        if overflowing is True:
+            self._adjust_overflowing(leftN, rightN, index_ptr)
+        elif underflowing is True:
+            self._adjust_underflowing(leftN, rightN, index_ptr)
+        else:
+            return
            
     def _delete(self, key):
         if key in self.keys and self.isLeaf is True:
