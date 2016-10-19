@@ -55,6 +55,32 @@ class Node(object):
                 arr[i] = new_k
                 break
         return arr
+
+    def _split_child(self, fullChild):
+        lHalf, median, rHalf = Node._split_keys(fullChild.keys)
+
+        leftChild = Node(self.order, self)
+        leftChild.isLeaf = fullChild.isLeaf
+
+        leftChild.keys = lHalf
+        fullChild.keys = rHalf
+        leftChild.count = len(leftChild.keys)
+        fullChild.count = len(fullChild.keys)
+
+        if fullChild.isLeaf is False:
+            pLeft, pRight = Node._split_pointers(fullChild.pointers)
+            leftChild.pointers = pLeft
+            fullChild.pointers = pRight
+
+        index = self._get_index(median)
+        if index == len(self.keys):
+            self.keys.append(median)
+            self.pointers.insert(index, leftChild)
+        else:
+            self.keys.insert(index, median)
+            self.pointers.insert(index, leftChild)
+        self.count += 1
+
     def _insert_nonfull(self, key):
         index = self._get_index(key)
 
