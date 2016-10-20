@@ -122,6 +122,42 @@ class Node(object):
             index = self._get_index(key)
             return self.pointers[index]._search(key)
 
+    def _get_leftmost_leaf(self):
+        if self.isLeaf is True:
+            return self
+        else:
+            return self.pointers[0]._get_leftmost_leaf()
+
+    def _has_right_sib(self, index_ptr):
+        len_ptrs = len(self.parent.pointers) - 1
+        return index_ptr != len_ptrs
+
+    def _has_left_sib(self, index_ptr):
+        return index_ptr > 0
+
+    def _get_left_sib(self, index):
+        return self.parent.pointers[index - 1]
+
+    def _get_right_sib(self, index):
+        return self.parent.pointers[index + 1]
+
+    def _remove_pointers(self, indexes):
+        arr = self.pointers
+        new_arr = []
+        for index, value in enumerate(arr):
+            if index in indexes: continue
+            else: new_arr.append(value)
+        self.pointers = new_arr
+        return
+
+    def _remove_keys(self, indexes):
+        arr = self.keys
+        new_arr = []
+        for index, value in enumerate(arr):
+            if index in indexes: continue
+            else: new_arr.append(value)
+        self.keys = new_arr
+        return
 
     def _merge(self, node):
         if self.keys[0] < node.keys[0]:
