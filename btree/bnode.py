@@ -141,6 +141,28 @@ class Node(object):
             self.parent._remove_keys([index])
             self.parent._remove_pointers([index+1])
         return
+
+    def _redistribute(self, mode):
+        pos = 0 if mode == '->' else 1
+        key = self.keys[pos - 1]
+        ptr = self.pointers[pos - 1]
+        index = self.parent._get_index(key)
+        index_ptr = self.parent._get_index_pointer(self)
+        parentKey = self.parent.keys[index]
+        self.parent._replace_key(parentKey, key)
+        if mode == '->':
+            self._get_right_sib(index_ptr).keys.insert(0, parentKey)
+            self._get_right_sib(index_ptr).pointers.append(ptr)
+            self.keys.pop()
+            self.pointers.pop()
+            return
+        else:
+            self._get_left_sib(index_ptr).keys.append(parentKey)
+            self._get_left_sib(index_ptr).pointers.append(ptr)
+            self.keys.pop(0)
+            self.pointers.pop(0)
+            return
+
     def _adjust_overflowing(self, leftN=None, rightN=None, index_ptr=0):
         if leftN is not None and leftN._is_full():
             self._get_left_sib(index_ptr)._redistribute('->')
