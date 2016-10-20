@@ -122,6 +122,25 @@ class Node(object):
             index = self._get_index(key)
             return self.pointers[index]._search(key)
 
+
+    def _merge(self, node):
+        if self.keys[0] < node.keys[0]:
+            index = self.parent._get_index(self.keys[-1])
+            parentKey = self.parent.keys[index]
+            self.keys.append(parentKey)
+            self.keys.extend(node.keys)
+            self.pointers.extend(node.pointers)
+            self.parent._remove_keys([index])
+            self.parent._remove_pointers([index+1])
+        else:
+            index = self.parent._get_index(node.keys[-1])
+            parentKey = self.parent.keys[index]
+            node.keys.append(parentKey)
+            node.keys.extend(self.keys)
+            node.pointers.extend(self.pointers)
+            self.parent._remove_keys([index])
+            self.parent._remove_pointers([index+1])
+        return
     def _adjust_overflowing(self, leftN=None, rightN=None, index_ptr=0):
         if leftN is not None and leftN._is_full():
             self._get_left_sib(index_ptr)._redistribute('->')
