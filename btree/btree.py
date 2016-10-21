@@ -17,3 +17,7 @@ class BTree(object):
         self.root._delete(key)
         return
 
+    def preorder(self):
+        self.root._preorder()
+        return
+
