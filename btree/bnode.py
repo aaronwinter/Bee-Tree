@@ -160,22 +160,17 @@ class Node(object):
         return
 
     def _merge(self, node):
-        if self.keys[0] < node.keys[0]:
-            index = self.parent._get_index(self.keys[-1])
-            parentKey = self.parent.keys[index]
-            self.keys.append(parentKey)
-            self.keys.extend(node.keys)
-            self.pointers.extend(node.pointers)
-            self.parent._remove_keys([index])
-            self.parent._remove_pointers([index+1])
-        else:
-            index = self.parent._get_index(node.keys[-1])
-            parentKey = self.parent.keys[index]
-            node.keys.append(parentKey)
-            node.keys.extend(self.keys)
-            node.pointers.extend(self.pointers)
-            self.parent._remove_keys([index])
-            self.parent._remove_pointers([index+1])
+        leftN = self if self.keys[0] < node.keys[0] else node
+        rightN = node if self.keys[0] < node.keys[0] else self
+
+        parentKey = self.parent.keys[index]
+        index = self.parent._get_index(leftN.keys[-1])
+        leftN.keys.append(parentKey)
+        leftN.keys.extend(rightN.keys)
+        leftN.pointers.extend(rightN.pointers)
+
+        self.parent._remove_keys([index])
+        self.parent._remove_pointers([index+1])
         return
 
     def _redistribute(self, mode):
