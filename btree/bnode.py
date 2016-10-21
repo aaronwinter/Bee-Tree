@@ -259,3 +259,13 @@ class Node(object):
         else:
             index = self._get_index(key)
             return self.pointers[index]._delete(key)
+
+    def _preorder(self, f_space=''):
+        print f_space + ">##### Node"
+        print f_space + "      is leaf: ", self.isLeaf
+        print f_space + "      is root: ", self.isRoot
+        print f_space, self.keys, len(self.pointers)
+        for c in self.pointers:
+            c._preorder(f_space + '    ')
+        print f_space + "<##### Node"
+
