@@ -1,5 +1,6 @@
 from bnode import Node
 
+
 class BTree(object):
     def __init__(self, order):
         self.order = order
@@ -20,4 +21,3 @@ class BTree(object):
     def preorder(self):
         self.root._preorder()
         return
-

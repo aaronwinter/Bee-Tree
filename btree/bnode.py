@@ -10,26 +10,26 @@ class Node(object):
 
     @staticmethod
     def _split_keys(arr):
-        lHalf = arr[:len(arr)/2]
-        rHalf = arr[len(arr)/2+1:]
-        median = arr[len(arr)/2]
+        lHalf = arr[:len(arr) / 2]
+        rHalf = arr[len(arr) / 2 + 1:]
+        median = arr[len(arr) / 2]
         return (lHalf, median, rHalf)
 
     @staticmethod
     def _split_pointers(arr):
-        return (arr[:len(arr)/2], arr[len(arr)/2:])
-    
+        return (arr[:len(arr) / 2], arr[len(arr) / 2:])
+
     def _is_full(self):
-       return len(self.keys) == 2 * self.order - 1
+        return len(self.keys) == 2 * self.order - 1
 
     def _is_half_full(self):
-       return len(self.keys) == (2 * self.order - 1)/2
-    
+        return len(self.keys) == (2 * self.order - 1) / 2
+
     def _is_overflowing(self):
         return len(self.keys) >= self.order
 
     def _is_underflowing(self):
-        return len(self.keys) <= (self.order/2 - 1)
+        return len(self.keys) <= (self.order / 2 - 1)
 
     def _get_index(self, k):
         index = 0
@@ -40,14 +40,14 @@ class Node(object):
             return index + 1
         else:
             return index
-    
+
     def _get_index_pointer(self, target):
         index = 0
         for index, ptr in enumerate(self.pointers):
             if target == ptr:
                 return index
         return -1
-    
+
     def _replace_key(self, k, new_k):
         arr = self.keys
         for i, v in enumerate(arr):
@@ -170,7 +170,7 @@ class Node(object):
         leftN.pointers.extend(rightN.pointers)
 
         self.parent._remove_keys([index])
-        self.parent._remove_pointers([index+1])
+        self.parent._remove_pointers([index + 1])
         return
 
     def _redistribute(self, mode):
@@ -202,7 +202,7 @@ class Node(object):
         else:
             self.parent._split_child(self)
             self.parent._adjust()
-    
+
     def _adjust_underflowing(self, leftN=None, rightN=None, index_ptr=0):
         if leftN is not None and len(leftN.keys) > (self.order - 1):
             self._get_left_sib(index_ptr)._redistribute('->')
@@ -224,7 +224,6 @@ class Node(object):
                 return
         return
 
-                
     def _adjust(self):
         overflowing = self._is_overflowing()
         underflowing = self._is_underflowing()
@@ -240,17 +239,17 @@ class Node(object):
             self._adjust_underflowing(leftN, rightN, index_ptr)
         else:
             return
-           
+
     def _delete(self, key):
         if key in self.keys and self.isLeaf is True:
             self.keys.remove(key)
             self._adjust()
         elif key in self.keys and self.isLeaf is False:
             index = self._get_index(key)
-            smallestNode = self.pointers[index+1]._get_leftmost_leaf()
+            smallestNode = self.pointers[index + 1]._get_leftmost_leaf()
             smallestKey = smallestNode.keys[0]
             self._replace_key(key, smallestKey)
-            self.pointers[index+1]._get_leftmost_leaf()._adjust()
+            self.pointers[index + 1]._get_leftmost_leaf()._adjust()
         else:
             index = self._get_index(key)
             return self.pointers[index]._delete(key)
@@ -263,4 +262,3 @@ class Node(object):
         for c in self.pointers:
             c._preorder(f_space + '    ')
         print f_space + "<##### Node"
-
